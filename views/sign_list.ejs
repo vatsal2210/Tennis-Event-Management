@@ -1,0 +1,468 @@
+<%- include header %>
+	<div class="header clearfix">
+		<nav>
+			<ul class="nav nav-pills pull-right">
+				<li title="Home" role="presentation"><a href="/tournament">Dashboard</a></li>
+				<li title="Signing List" class="tab-pane fade in active" role="presentation"><a href="#">Signing List</a></li>
+			</ul>
+		</nav>
+		<h3 class="text-muted">AHMEDABAD INTERNATIONAL SPORTS ACADEMY</h3>			
+	</div>
+
+
+	<h3>  Signing List </h3>
+		<div class="heading">
+		<lable>Tournament Name : </lable><b id="tournamentName1" value=""> </b>&nbsp; &nbsp; &nbsp; <lable>Start Date : </lable><b id="startDate1" value=""></b> &nbsp; &nbsp; &nbsp; <lable>End Date : </lable><b id="endDate1" value=""></b>
+		&nbsp; &nbsp; &nbsp;
+		<lable>gender : </lable><b id ="gender1" value=""></b> &nbsp; &nbsp; &nbsp; <lable>Sub-gender : </lable><b id = 'age1' value=""></b>
+	</div>
+	<br><br>
+		<input type="text" id="search" placeholder="Type to search" title="Type to search" autocomplete="off">
+		<br><br>
+			
+			<a href="#" onClick="javascript:addUser();" class="btn btn-primary">Add Player</a>  &nbsp; &nbsp; &nbsp;
+			<a href="#" onClick="javascript:deleteSignList();" class="btn btn-danger">Delete All</a>
+
+			<br><br>
+			<h4> Total Entry : <b id="entry"></b></h4>
+			<br>
+			<table id="sign_list" class="sortable table">
+				<thead>
+					<tr>
+						<th data-tsorter="numeric"> No </th>	
+						<th data-tsorter="numeric"> Reg No. </th>
+						<th data-tsorter="text"> Given Name </th>
+						<th data-tsorter="text"> Family Name </th>					
+						<th data-tsorter="numeric"> DOB </th>
+						<th data-tsorter="text"> State </th>
+						<th data-tsorter="numeric"> Rank </th>
+						<th data-tsorter="numeric"> Total Points </th>
+						<th data-tsorter="numeric"> Contact No </th>
+						<th> </th>
+					</tr>
+				</thead>
+				<tbody id="searchData">
+					 <% for(var i=0; i < data.length; i++){ %>	
+						<tr class = "notfirst">
+							<td> <%= i+1 %> </td>
+							<td> <%= data[i].reg_no %> </td>
+							<td> <%= data[i].first_name %> </td>
+							<td> <%= data[i].last_name %> </td>
+							<td> <%= data[i].dob %> </td>
+							<td> <%= data[i].state %> </td>
+							<td> <%= data[i].rank %> </td>
+							<td> <%= data[i].point %> </td>
+							<td> <%= data[i].contactno %> </td>
+							<td> <a onclick= "editSignPlayer(<%= data[i].no %>)" class="btn btn-warning"> Edit</a>
+								 <a onclick= "deleteSignPlayer(<%= data[i].no %>)" class="btn btn-danger" onclick="return confirm('Are you want to remove this item?')"> Delete</a>
+							</td>														
+						</tr>	
+					<% } %>				
+				</tbody>
+			</table>
+
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">        
+					<div class="modal fade" id="createrole" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+									<h4 class="modal-title" id="myModalLabel"> Add Player </h4>
+								</div>
+								<form class="form-horizontal" method="post" id="createPlayerList" name="createPlayerList">
+									<div class="modal-body">
+										<input type="hidden" id="gender" value="">
+										<input type="hidden" id="age" value="">
+										<input type="text" id="regno" name="regno" required="required" max='6' placeholder="Enter Reg. No"  autocomplete="off" class="form-control placeholder-no-fix" />
+										<br>
+										<input type="text" id="firstName" name="firstName" required="required" placeholder="Enter FirstName"  autocomplete="off" class="form-control placeholder-no-fix" />
+										<br>
+										<input type="text" id="lastName" name="lastName" required="required" placeholder="Enter LastName" autocomplete="off" class="form-control placeholder-no-fix" />
+										<br>									
+										<input type="text" id="dob" name="dob" required="required" placeholder="Enter Date of Birth 01-05-2017"  autocomplete="off" class="form-control placeholder-no-fix" />
+										<br>
+										<input type="text" id="state" name="state" required="required" placeholder="Enter State" autocomplete="off" class="form-control placeholder-no-fix"/>
+										<br>
+										<input type="text" id="rank" name="rank" required="required" placeholder="Enter Rank" autocomplete="off" class="form-control placeholder-no-fix"/>
+										<br>
+										<input type="text" id="point" name="point" required="required" placeholder="Enter Point" autocomplete="off" class="form-control placeholder-no-fix"/>
+										<br>
+										<input type="text" id="contactno" name="contactno" placeholder="Enter Contact No" min="10" max="12" autocomplete="off" class="form-control placeholder-no-fix" />
+										<br>												
+									</div>
+									<div class="modal-footer">
+										<CENTER>  <p id="errorcmass" style="color: red;"></p></CENTER>
+										<button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+										<button class="btn btn-success createnewuserbtn sentinvitebtn" type="button" id="sendinvibid" onclick="saveNewPlayer()"><i class="fa fa-paper-plane"></i> Save </button>
+										<button class="btn btn-info" type="button" id="buttonsumbit" style="display: none;"><i class="fa fa-spinner fa-pulse"></i> Please Wait...</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">        
+					<div class="modal fade" id="editrole" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+									<h4 class="modal-title" id="myModalLabel"> Edit Player </h4>
+								</div>
+								<form class="form-horizontal" method="post" id="editSeed" name="editSeed">
+									<div class="modal-body">
+										<input type="hidden" id="gender1" value="">
+										<input type="hidden" id="age1" value="">
+										<input type="text" id="regno1" name="regno1" max='6' placeholder="Enter Reg. No"  autocomplete="off" class="form-control placeholder-no-fix"/>
+										<br>
+										<input type="text" id="firstName1" name="firstName1" placeholder="Enter FirstName"  autocomplete="off" class="form-control placeholder-no-fix" />
+										<br>
+										<input type="text" id="lastName1" name="lastName1" placeholder="Enter LastName" autocomplete="off" class="form-control placeholder-no-fix" />
+										<br>
+										<input type="text" id="dob1" name="dob1" placeholder="Enter Date of Birth 01-05-2017"  autocomplete="off" class="form-control placeholder-no-fix" />
+										<br>
+										<input type="text" id="state1" name="state1" placeholder="Enter State" autocomplete="off" class="form-control placeholder-no-fix"/>
+										<br>
+										<input type="text" id="rank1" name="rank1" placeholder="Enter Rank" autocomplete="off" class="form-control placeholder-no-fix" />
+										<br>
+										<input type="text" id="point1" name="point1" placeholder="Enter Point" autocomplete="off" class="form-control placeholder-no-fix"/>
+										<br>																		
+										<input type="text" id="contactno1" name="contactno1" required="required" placeholder="Enter Contact No" min="10" max="12" autocomplete="off" class="form-control placeholder-no-fix" />
+										<br>			
+									</div>
+									<div class="modal-footer">
+										<CENTER>  <p id="errorcmass" style="color: red;"></p></CENTER>
+										<button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+										<button class="btn btn-success createnewuserbtn sentinvitebtn" type="button" id="sendinvibid" onclick="saveSignEditPlayer()"><i class="fa fa-paper-plane"></i> Save </button>
+										<button class="btn btn-info" type="button" id="buttonsumbit" style="display: none;"><i class="fa fa-spinner fa-pulse"></i> Please Wait...</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">	
+			$(window).on('load', function() {
+				var url_string = window.location.href;
+				var url = new URL(url_string);
+				var gender = url.searchParams.get("gender");
+				document.getElementById("gender").value = gender;
+				document.getElementById("gender1").value = gender;
+				var age = url.searchParams.get("age");
+				document.getElementById("age").value = age;
+				document.getElementById("age1").value = age;
+
+				$.ajax({
+					dataType: 'json',
+					type: 'GET',
+					url: path+'getTournamentData',
+					data:{
+						gender:gender, age:age
+					}
+				}).success(function(response){
+					//console.log(response);
+					var tournamentName = response[0].name;
+					var gender = response[0].gender;
+					var age = response[0].age;
+					var startDate = response[0].startdate;
+					var endDate = response[0].enddate;
+
+					document.getElementById('tournamentName1').innerHTML = tournamentName
+					document.getElementById('gender1').innerHTML = gender
+					document.getElementById('age1').innerHTML = age
+					document.getElementById('startDate1').innerHTML = startDate
+					document.getElementById('endDate1').innerHTML = endDate
+				})		
+		
+			});
+
+
+			window.setTimeout(function() {
+			 $(".alert").fadeTo(500, 0).slideUp(500, function(){
+			        $(this).remove(); 
+			    });
+			}, 1500);
+
+			$(window).load(function() {
+				var rowCount = 0;
+	            var table = document.getElementById("sign_list");
+	            var rows = table.getElementsByTagName("tr");
+	            for (var i = 0; i < rows.length; i++) {
+	            	if(rows[i].getElementsByTagName("td").length > 0) {
+	            		rowCount++;
+	            	}
+	            	document.getElementById("entry").innerHTML = rowCount;
+	        	}
+	        });
+
+			function addUser(){			
+				$('#createrole').modal('show');
+				$('#createPlayerList').trigger("reset");
+			} 
+
+			$('#regno').on('keyup', function () {
+				var reg_no = $("#regno").val();
+				var gender = $("#gender").val();
+				var age = $("#age").val();			
+				dataValue(reg_no,gender,age);
+			});
+
+			function saveNewPlayer() 
+			{
+				var regno = document.getElementById("regno").value;
+				var firstName=document.getElementById("firstName").value;
+				var lastName=document.getElementById("lastName").value;
+				var contactno=document.getElementById("contactno").value;
+				var dob=document.getElementById("dob").value;
+				var state=document.getElementById("state").value;
+				var rank=document.getElementById("rank").value;
+				var point=document.getElementById("point").value;
+				var gender = document.getElementById("gender").value;
+				var age = document.getElementById("age").value;
+				
+				$("#buttonsumbit").show();
+				$(".createnewuserbtn").hide();
+				    			
+				if(firstName=="" || lastName=="" || dob=="" || state=="")
+				{
+					$("#errorcmass").html("Please provide First Name!");
+					$("#buttonsumbit").hide();
+					$(".createnewuserbtn").show();
+					return false;
+				} 
+				if(lastName=="")
+				{
+					$("#errorcmass").html("Please provide Last Name!");
+					$("#buttonsumbit").hide();
+					$(".createnewuserbtn").show();
+					return false;
+				} 
+				if(dob=="")
+				{
+					$("#errorcmass").html("Please provide Date of Birth!");
+					$("#buttonsumbit").hide();
+					$(".createnewuserbtn").show();
+					return false;
+				} 
+				if(state=="")
+				{
+					$("#errorcmass").html("Please provide State!");
+					$("#buttonsumbit").hide();
+					$(".createnewuserbtn").show();
+					return false;
+				} 
+
+				/*if(regno =="" || contactno =="" || rank =="" || point ==""){
+					var regno = 0,
+					    contactno = 0, 
+					    rank = 0,
+					    point=0;
+				}*/
+
+				$.ajax({	
+						type:'POST',
+						url:path+'createPlayerList',
+						data:{
+							gender:gender,age:age,regno :regno,firstName:firstName,lastName:lastName,contactno:contactno,dob:dob,state:state,rank:rank,point:point
+						},
+
+					}).success(function(response){
+						alert(response.message);
+							$('#createrole').modal('hide');
+							$("#buttonsumbit").hide();	
+							$(".createnewuserbtn").show();
+							$('#createPlayerList').trigger("reset");
+							location.reload();
+					}).error(function(response) {
+	     				alert(response.message);
+	     				$('#createrole').modal('show');
+	     				$('#createPlayerList').trigger("reset");
+	     			});
+			}
+
+			function dataValue(reg_no,gender,age) {			
+				$.ajax({				 			
+					"dataType": 'json',
+					"type": "GET",
+					url:path+'getRegPlayerdetails',
+					data:{
+						reg_no : reg_no,gender:gender,age:age
+					},
+				
+				}).success(function(result){				
+					var firstname = result[0].first_name;
+					var lastname = result[0].last_name;	
+					var contactno = result[0].contactno;			
+					var dob = result[0].dob;
+					var state = result[0].state;
+					var rank = result[0].rank;
+					var point = result[0].total_point;
+														
+					$('#firstName').val(firstname);
+					$('#lastName').val(lastname);
+					$('#contactno').val(contactno);					
+					$('#dob').val(dob);
+					$('#state').val(state);
+					$('#rank').val(rank);
+					$('#point').val(point);
+
+				}).error(function(result) {
+		     		console.log("failure value" + result);	     		
+				});  		
+			} 
+
+			function deleteSignPlayer(userno){
+				var gender = document.getElementById("gender").value;
+				var age = document.getElementById("age").value;
+				var conform = confirm("Are you sure want to delete");
+				if(conform !=true){
+					return;
+				} else {
+					$.ajax({	
+						type:'POST',
+						url:path+'deleteSignPlayer',
+						data:{
+							userno:userno,gender:gender, age:age
+						}
+						}).success(function(response){
+							alert(response.message);
+							location.reload();
+						}).error(function(response) {
+			     			alert(response.message);
+			     		});
+		     		}
+			}
+
+			function deleteSignList(){
+				var gender = document.getElementById("gender").value;
+				var age = document.getElementById("age").value;			
+				var conform = confirm("Are you sure want to delete");
+				if(conform !=true){
+					return;
+				} else {
+					$.ajax({	
+						type:'POST',
+						url:path+'deleteSignList',
+						data:{
+							gender:gender, age:age
+						}
+						}).success(function(response){
+							alert(response.message);
+							location.reload();
+						}).error(function(response) {
+			     				alert(response.message);
+			     		});
+		     		}
+			}
+
+			function editSignPlayer(userno){
+				var gender = document.getElementById("gender").value;
+				var age = document.getElementById("age").value;			
+				$.ajax({				 			
+					"dataType": 'json',
+					"type": "GET",
+					url:path+'editSignPlayer',
+					data:{
+						userno:userno, gender:gender, age:age
+					},			
+				}).success(function(result){
+					$('#editrole').modal('show');									
+					var regno = result[0].reg_no;
+					var firstname = result[0].first_name;
+					var lastname = result[0].last_name;	
+					var contactno = result[0].contactno;				
+					var dob = result[0].dob;
+					var state = result[0].state;
+					var rank = result[0].rank;
+					var point = result[0].point;
+							
+					$('#regno1').val(regno);
+					$('#firstName1').val(firstname);
+					$('#lastName1').val(lastname);
+					$('#contactno1').val(contactno);
+					$('#dob1').val(dob);
+					$('#state1').val(state);
+					$('#rank1').val(rank);
+					$('#point1').val(point);
+
+				}).error(function(result) {
+		     		console.log("failure value" + result);	     		
+				});  		
+			} 
+
+			function saveSignEditPlayer(){
+				var gender1 = document.getElementById("gender1").value;
+				var age1 = document.getElementById("age1").value;
+				var regno1 = document.getElementById("regno1").value;
+				var firstName1 = document.getElementById("firstName1").value;
+				var lastName1 = document.getElementById("lastName1").value;
+				var contactno1 = document.getElementById("contactno1").value;			
+				var dob1 = document.getElementById("dob1").value;
+				var state1 = document.getElementById("state1").value;
+				var point1 = document.getElementById("point1").value;
+				
+				$("#buttonsumbit").show();
+				$(".sendinvibid").hide();
+				    			
+				if(regno1 =="" || firstName1 =="" || lastName1 =="" || dob1 =="" || state1=="" || point1 =="")
+				{
+					$("#errorcmass").html("Please provide all fileds");
+					$("#buttonsumbit").hide();
+					$(".sendinvibid").show();
+					return false;
+				} 
+
+				$.ajax({	
+						type:'POST',
+						url:path+'saveEditPlayer',
+						data:{
+							gender1:gender1, age1:age1, regno1:regno1, firstName1:firstName1 ,lastName1:lastName1 ,contactno1:contactno1 ,dob1:dob1 ,state1:state1 , point1:point1
+						},
+
+					}).success(function(response){
+						alert(response.message);
+							$('#editrole').modal('hide');
+							$("#buttonsumbit").hide();	
+							$(".createnewuserbtn").show();
+							$('#editSeed').trigger("reset");
+							location.reload();
+					}).error(function(response) {
+	     				alert(response.message);
+	     					$('#editrole').modal('show');
+	     					$('#editSeed').trigger("reset");
+	     			});
+			}
+
+		
+			//For Search
+			var $rows = $('#searchData tr');
+			$('#search').keyup(function() {
+			    var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+			    
+			    $rows.show().filter(function() {
+			        var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+			        return !~text.indexOf(val);
+			    }).hide();
+			});
+
+			function init() {
+		     var sorter2 = tsorter.create('sign_list', null, {
+		            'image-number': function(row){  
+		                return parseFloat( this.getCell(row).childNodes[1].nodeValue, 10 );
+		            }
+		        });
+			}
+
+			window.onload = init;
+		</script>
+<%- include footer %>		

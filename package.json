@@ -1,0 +1,14 @@
+{
+  "name": "vatsal_tennis_application",
+  "version": "1.0.0",
+  "description": "Tennis Application Created by Vatsal Shah ",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vatsal shah",
+  "license": "ISC",
+  "dependencies": {
+
+  }
+}

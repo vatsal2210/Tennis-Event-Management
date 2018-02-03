@@ -1,0 +1,101 @@
+<%- include header %>
+
+	<div class="header clearfix">
+		<nav>
+			<ul class="nav nav-pills pull-right">
+				<li title="Dashboard" role="presentation"><a href="/tournament">Dashboard</a></li>
+				<li title="AITA List" class="tab-pane fade in active"  role="presentation"><a href="#">AITA List</a></li>		
+			</ul>
+		</nav>
+		<h3 class="text-muted">AHMEDABAD INTERNATIONAL SPORTS ACADEMY</h3>			
+	</div>
+
+	<h4> Upload AITA List in .csv Format </h4>
+	<a title="Download Sample csv file" href="/csv/sampletemplate.csv" class="btn btn-default" target="_blank" style="color:black"><b> Download Sample Template </b></a>
+
+	<br/><br/>	
+	<form action="/uploadcsv" class="form-horizontal" method="POST" enctype="multipart/form-data">		
+		<input type="hidden" id="gender" name="gender" value="">
+		<input type="hidden" id="age" name="age" value="">
+		<lable class="btn btn-primary">
+			<input type="file" id="csvFile" name="csvFile" accept=".csv, text/csv" required>
+		</lable>				
+			<input type="submit" class="btn btn-default" name="save" value="Submit">					
+	</form>
+
+	<h3>  AITA List </h3>
+		
+		<input type="text" id="search" placeholder="Type to search" title="Type to search" autocomplete="off">
+		<br><br>			
+
+		<table id="players" class="sortable table">
+			<thead>
+				<tr>
+					<th data-tsorter="numeric"> Rank </th>
+					<th data-tsorter="text"> Given Name </th>
+					<th data-tsorter="text"> Family Name </th>
+					<th data-tsorter="numeric"> Reg No. </th>
+					<th data-tsorter="numeric"> DOB </th>
+					<th data-tsorter="text"> State </th>
+					<th data-tsorter="numeric"> Six SING. PTS. </th>
+					<th data-tsorter="numeric"> Six DBLS. PTS. </th>
+					<th data-tsorter="numeric"> 25% Six DBLS. PTS. </th>
+					<th data-tsorter="numeric"> PTS. </th>
+					<th data-tsorter="numeric"> Late WL </th>
+					<th data-tsorter="numeric"> 25% PTs. </th>
+					<th data-tsorter="numeric"> Total PTS. </th>
+				</tr>
+			</thead>
+			<tbody id="searchData">
+				<% for(var i=0; i < data.length; i++){ %>	
+					<tr class = "notfirst">
+						<td>  <%= data[i].rank %> </td>
+						<td>  <%= data[i].first_name %> </td>
+						<td>  <%= data[i].last_name %> </td>
+						<td>  <%= data[i].reg_no %> </td>
+						<td>  <%= data[i].dob %></td>
+						<td>  <%= data[i].state %> </td>
+						<td>  <%= data[i].single_point %> </td>
+						<td>  <%= data[i].double_point %> </td>
+						<td>  <%= data[i].double_point_25 %> </td>
+						<td>  <%= data[i].under16_point %> </td>
+						<td>  <%= data[i].late_wl %> </td>
+						<td>  <%= data[i].under14_point %> </td>
+						<td>  <%= data[i].total_point %> </td>	
+					</tr>	
+				<% } %>	
+			</tbody>
+		</table>
+		
+	<script type="text/javascript">
+		$(window).on('load', function() {	
+			var url_string = window.location.href;
+			var url = new URL(url_string);
+			var gender = url.searchParams.get("gender");			
+			var age = url.searchParams.get("age");	
+			document.getElementById("gender").value = gender;
+			document.getElementById("age").value = age;
+		});
+
+
+		//For Search
+		var $rows = $('#searchData tr');
+		$('#search').keyup(function() {
+		    var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+		    
+		    $rows.show().filter(function() {
+		        var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+		        return !~text.indexOf(val);
+		    }).hide();
+		});
+
+		function init() {
+	     var sorter1 = tsorter.create('players', null, {
+	            'image-number': function(row){ 
+	                return parseFloat( this.getCell(row).childNodes[1].nodeValue, 10 );
+	            }
+	        });
+		}	    
+		window.onload = init;
+	</script>
+<%- include footer %>

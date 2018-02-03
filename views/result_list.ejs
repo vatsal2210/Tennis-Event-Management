@@ -1,0 +1,212 @@
+<%- include header %>
+	<div class="header clearfix">
+		<nav>
+			<ul class="nav nav-pills pull-right">
+				<li title="Home" role="presentation"><a href="/tournament">Dashboard</a></li> 
+				<li title="Result List" class="tab-pane fade in active" role="presentation"><a href="#">Result List</a></li> 
+			</ul>
+		</nav>
+		<h3 class="text-muted">AHMEDABAD INTERNATIONAL SPORTS ACADEMY</h3>			
+	</div>
+
+	<h3 style="float: left;">  Result List </h3>
+		<% if (data.length > 0) { %>
+			<a href="#" onclick="deleteResult()" class="btn btn-danger" style="float: right;margin-left: 10px">Delete Result</a>
+			<!-- <a href="#" id="test" class="btn btn-info" style="float: right;margin-left: 10px">Export to Image</a> -->
+			<a href="#" id="excelSheet" onClick="fnExcelReport();" class="btn btn-info" style="float: right;">Export to Excel</a>
+		<% } %>
+
+	<div class="heading" id="myTable" style="background-color: white">			
+		<% if (data.length == 0) { %>
+			<center><a href="#" onClick="javascript:createResult();" class="btn btn-primary">Create Result</a> </center>
+		<% } else { %>
+			<table class="table" id="resultTable">
+				<tr> 
+					<td> Tournament Name : <b id="tournamentName1" value=""></b> </td> 
+					<td> Start Date : <b id="startDate1" value=""></b> &nbsp; &nbsp; End Date : <b id="endDate1" value=""></b></td> 
+					<td> Gender : <b id ="gender1" value=""></b>&nbsp; &nbsp;  Age : <b id="age1" value=""></b> </td>
+				</tr>
+				<tbody>
+					<tr>
+						<!-- <th> No </th> -->
+						<th> No </th>
+						<th> Round No</th>
+						<th> Winner Name </th>
+						<th> Reg No </th>												
+					</tr>
+						<% for(var i=0; i < data.length; i++){ %>		
+							<tr style="text-align: center;">				
+								<!-- <td> <b> <%= data[i].no %> </b> </td> -->
+								<td> <%= i+1 %> </td>
+								<td> <%= data[i].round_no %> </td>
+								<td> <%= data[i].winner_name %> </td>
+								<td> <%= data[i].reg_no %> </td>
+							</tr>	
+						<% } %>		
+				</tbody>
+			</table>	
+		<% } %>
+	</div>
+	<br><br>
+
+	
+	<script type="text/javascript">	
+
+	$(window).on('load', function() {	
+		var url_string = window.location.href;
+		var url = new URL(url_string);
+		var gender = url.searchParams.get("gender");			
+		var age = url.searchParams.get("age");	
+
+	  	$.ajax({
+			dataType: 'json',
+			type: 'GET',
+			url: path+'getTournamentData',
+			data:{
+				gender:gender, age:age
+			}
+		}).success(function(response){
+			//console.log(response);
+			var tournamentName = response[0].name;
+			var gender = response[0].gender;
+			var age = response[0].age;
+			var startDate = response[0].startdate;
+			var endDate = response[0].enddate;
+
+			document.getElementById('tournamentName1').innerHTML = tournamentName
+			document.getElementById('gender1').innerHTML = gender
+			document.getElementById('age1').innerHTML = age
+			document.getElementById('startDate1').innerHTML = startDate
+			document.getElementById('endDate1').innerHTML = endDate
+		})	
+	});
+
+		$(document).ready(function () {
+		  	$("tr").each(function(){
+		    	var col_val = $(this).find("td:eq(6)").text();
+		    	if ( $.trim(col_val) === "1st Round"){
+		    		$(this).addClass('round1st');  
+		    	} else if ( $.trim(col_val) === "2nd Round"){
+		    		$(this).addClass('round2nd');  
+		    	} else if ( $.trim(col_val) === "3rd Round"){
+		    		$(this).addClass('round3rd');  
+		    	} else if ( $.trim(col_val) === "PRE-QUARTER"){
+		      		$(this).addClass('pre_quater');  
+		    	} else if ( $.trim(col_val) === "QUARTER"){
+		      		$(this).addClass('quarter');  
+		    	} else if ( $.trim(col_val) === "SEMI-FINAL"){
+		      		$(this).addClass('semi_final');  
+		    	} else if ( $.trim(col_val) === "RUNNER-UP"){
+		      		$(this).addClass('runner_up');  
+		    	} else if ( $.trim(col_val) === "WINNER"){
+		      		$(this).addClass('winner');  
+		    	} 
+		  	});
+		});
+
+		//getting values of current time for generating the file name
+	        var dt = new Date();
+	        var day = dt.getDate();
+	        var month = dt.getMonth() + 1;
+	        var year = dt.getFullYear();
+	        var hour = dt.getHours();
+	        var mins = dt.getMinutes();
+	        var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+	        var url_string = window.location.href;
+			var url = new URL(url_string);
+			var gender = url.searchParams.get("gender");			
+			var age = url.searchParams.get("age");	
+
+		function fnExcelReport() {	
+			console.log("Called");		
+		    var tab_text = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
+		    tab_text = tab_text + '<head><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
+
+		    tab_text = tab_text + '<x:Name>Test Sheet</x:Name>';
+
+		    tab_text = tab_text + '<x:WorksheetOptions><x:Panes></x:Panes></x:WorksheetOptions></x:ExcelWorksheet>';
+		    tab_text = tab_text + '</x:ExcelWorksheets></x:ExcelWorkbook></xml></head><body>';
+
+		    tab_text = tab_text + "<table border='1px'>";
+		    tab_text = tab_text + $('#resultTable').html();
+		    tab_text = tab_text + '</table></body></html>';
+
+		    var data_type = 'data:application/vnd.ms-excel';
+		    
+		    var ua = window.navigator.userAgent;
+		    var msie = ua.indexOf("MSIE ");
+		    
+		    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+		        if (window.navigator.msSaveBlob) {
+		            var blob = new Blob([tab_text], {
+		                type: "application/csv;charset=utf-8;"
+		            });
+		            navigator.msSaveBlob(blob, 'Result Data.xls');
+		        }
+		    } else {
+		        $('#excelSheet').attr('href', data_type + ', ' + encodeURIComponent(tab_text));
+		        $('#excelSheet').attr('download', 'Result Data_'+gender+'_'+age+'_'+ postfix + '.xls');
+		    }		   
+		}
+
+		 $(document).ready(function(){
+
+			var element = $("#myTable"); // global variable
+			var getCanvas;
+			html2canvas(element, {
+         		onrendered: function (canvas) {
+                	getCanvas = canvas;
+                }
+              }); 	
+			$("#test").on('click', function () {
+		    	var imgageData = getCanvas.toDataURL("image/png");
+		    	var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
+		    	$("#test").attr("download", 'Result_'+gender+'_'+age+'_'+postfix +".png").attr("href", newData);
+			});
+		});
+
+		 function createResult(){
+			var url_string = window.location.href;
+			var url = new URL(url_string);
+			var gender = url.searchParams.get("gender");			
+			var age = url.searchParams.get("age");				
+			$.ajax({					
+				type:'POST',
+				url:path+'createResult',	
+				data:{
+					gender:gender, age:age
+				}		
+			}).success(function(response){
+				alert(response.message);
+				location.reload();
+			}).error(function(response){
+				alert(response.message);
+			})
+		}
+
+		function deleteResult(){
+			var deleteResult = confirm("Are you sure ? Result will be deleted!");
+			if(deleteResult == true){
+				 var url_string = window.location.href;
+				var url = new URL(url_string);
+				var gender = url.searchParams.get("gender");			
+				var age = url.searchParams.get("age");				
+				$.ajax({	
+					dataType: 'json',
+					type:'POST',
+					url:path+'deleteResult',	
+					data:{
+						gender:gender, age:age
+					}		
+				}).success(function(response){
+					alert(response.message);
+					location.reload();
+				}).error(function(response){
+					alert(response.message);
+				})
+			} else {
+				return;
+			}		
+		}
+	</script>
+<%- include footer %>			

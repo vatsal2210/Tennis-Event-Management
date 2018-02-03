@@ -1,0 +1,958 @@
+<%- include header %>
+<div class="header clearfix">
+	<nav>
+		<ul class="nav nav-pills pull-right">
+			<li title="Home" role="presentation"><a href="/tournament">Dashboard</a></li>			
+			<li title="Draw List" class="tab-pane fade in active" role="presentation"><a href="#">Draw List</a></li> 
+		</ul>
+	</nav>
+	<h3 class="text-muted">AHMEDABAD INTERNATIONAL SPORTS ACADEMY</h3>				
+</div>
+
+	<h3 style="float: left;">  Draw <b id="drawNo"></b> </h3> 
+	<% if (data.length > 0) { %>			
+		<!-- <a href="#" id="excelSheet" onClick="fnExcelReport();" class="btn btn-info" style="float: right;">Export to Excel</a> -->
+		<!-- <a href="#" id="savePDF"  class="btn btn-info" style="float: right;margin-left: 10px">Export to PDF</a>	 --> 				
+		<a href="#" id="test"  class="btn btn-info" style="float: right;margin-left: 10px">Export to Image</a>	 
+		<a href="#" onclick="deleteDraw()"  class="btn btn-danger" style="float: right;">Delete Draw</a>	
+	<% } %> 
+
+	<br/><br/>
+	<!-- <div id="myTable"> -->
+	<% if (data.length == 0) { %>
+		<center><a href="#" onClick="javascript:createDraw();" class="btn btn-primary">Create Draw</a> </center>
+	<% } else { %>
+		<% for(var i=0; i < data.length; i++){ %>						
+				<table style="background-color:White;"  id="myTable">
+					<tr>
+						<td colspan="10">	
+							Tournament Name: <b><%= data[i].name %></b> &nbsp; &nbsp;
+							Start Date: <b><%= data[i].startdate %></b> &nbsp; &nbsp; End Date: <b><%= data[i].enddate %></b> &nbsp; &nbsp;
+							Gender: <b><%= data[i].gender %></b> &nbsp; &nbsp;  Age: <b> <%= data[i].age %></b>  &nbsp;&nbsp; 
+							Draw of: <b><%= data[i].drawno%> </b>													
+						</td>
+					</tr>	
+					<tr>
+						<th> Round 1 </th>
+						<th> Round 2</th>
+						<th> Round 3</th>							
+						<% if(data[i].draw_no == '8'){ %>
+							<th> Round 4 </th>								
+						<% } else if(data[i].draw_no == '16') { %>
+							<th> Round 4 </th>	
+							<th> Round 5 </th>				
+						<% } else if(data[i].draw_no == '32') { %>
+							<th> Round 4 </th>	
+							<th> Round 5 </th>
+							<th> Round 6</th>						
+						<% } else if(data[i].draw_no == '64') { %>
+							<th> Round 4 </th>	
+							<th> Round 5 </th>
+							<th> Round 6</th>
+							<th> Round 7 </th>									
+						<% } else if(data[i].draw_no == '128') { %>
+							<th> Round 4 </th>	
+							<th> Round 5 </th>
+							<th> Round 6</th>
+							<th> Round 7 </th>
+							<th> Round 8 </th>
+						<% } %>
+					</tr>
+					<tbody>					
+						<tr>	
+							<td>																		
+								<% for(var j=0; j < data[i].playerList.length; j++){ %>													
+									<% if(data[i].playerList[j].round_no == 'Round-1') { %>																			
+										<table style="margin-bottom:0px;border-radius:15px; border-collapse:separate; border:0.05cm solid #73AD21;">
+											<tr style="height: 2cm">
+												<td>		
+													[<%= data[i].playerList[j].match_no %>] &nbsp;&nbsp;
+													<% if(data[i].playerList[j].player1){ %> 
+														<%=data[i].playerList[j].player1 %> &nbsp;  
+														<% if(data[i].playerList[j].winner == data[i].playerList[j].player1) { %> 
+															<i class="fa fa-trophy" style="float:right"></i> 
+														<% } %>
+													<%}else{%> TBD  <% } %> <br/>
+													
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+													<% if(data[i].playerList[j].player2){ %> 
+														<%=data[i].playerList[j].player2 %>  &nbsp;
+														<% if(data[i].playerList[j].winner == data[i].playerList[j].player2) { %> 
+															<i class="fa fa-trophy" style="float:right"></i> 
+														<% } %>
+													<% }else{ %> TBD  <% } %> <br/>												
+																																			
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+													<% if(data[i].playerList[j].set1_player1) { %>															
+														<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">
+															<b> Score : </b> 
+															[<%=data[i].playerList[j].set1_player1%> - <%=data[i].playerList[j].set1_player2%>] &nbsp;
+															
+															<% if(data[i].playerList[j].set2_player1) { %> 
+																[<%=data[i].playerList[j].set2_player1%> - <%=data[i].playerList[j].set2_player2%>] &nbsp;
+															<% } %>
+															<% if(data[i].playerList[j].set3_player1) { %>
+																[<%=data[i].playerList[j].set3_player1%> - <%=data[i].playerList[j].set3_player2%>] &nbsp; 
+															<% } %>
+															<% if(data[i].playerList[j].set4_player1) { %>
+																[<%=data[i].playerList[j].set4_player1%> - <%=data[i].playerList[j].set4_player2%>] &nbsp;
+															<% } %>
+															<% if(data[i].playerList[j].set5_player1) { %>
+																[<%=data[i].playerList[j].set5_player1%> - <%=data[i].playerList[j].set5_player2%>] &nbsp;
+															<% } %>
+														</a>
+													<% } else { %> 														
+														<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">
+															&nbsp;<b> Court No : </b> <%=data[i].playerList[j].court_no %> 
+															&nbsp;&nbsp;&nbsp;<b> Date : </b><%=data[i].playerList[j].match_date%> 
+															&nbsp;&nbsp;&nbsp;<b> Time : </b><%=data[i].playerList[j].match_time%> 
+														</a>														
+													<% } %>												
+												</td>
+											</tr>
+										</table>											
+									<% } %>
+								<% } %>
+							</td>
+							<td> 
+								<% for(var j=0; j < data[i].playerList.length; j++){ %>													
+									<% if(data[i].playerList[j].round_no == 'Round-2') { %>											
+										<table style="margin-top:0px ;margin-bottom:0px ;border-radius:15px; border-collapse:separate; border:0.05cm solid #73AD21;">
+											<tr style="height: 4.2cm;">
+												<td style="vertical-align: middle;">														
+													<% if(data[i].playerList[j].player1){ %> 
+														<%=data[i].playerList[j].player1 %> &nbsp;  <% if(data[i].playerList[j].winner == data[i].playerList[j].player1) { %> <i class="fa fa-trophy" style="float:right"></i> <% } %>
+													<%}else{%> TBD  <% } %> <br/>
+
+													<% if(data[i].playerList[j].player2){ %> 
+														<%=data[i].playerList[j].player2 %>  &nbsp; <% if(data[i].playerList[j].winner == data[i].playerList[j].player2) { %> <i class="fa fa-trophy" style="float:right"></i> <% } %>
+													<%}else{%> TBD  <% } %> <br/>
+																																																		
+													<% if(data[i].playerList[j].set1_player1) { %>															
+														<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">
+															<b> Score : </b> 
+															[<%=data[i].playerList[j].set1_player1%> - <%=data[i].playerList[j].set1_player2%>] &nbsp;
+															
+															<% if(data[i].playerList[j].set2_player1) { %> 
+																[<%=data[i].playerList[j].set2_player1%> - <%=data[i].playerList[j].set2_player2%>] &nbsp;
+															<% } %>
+															<% if(data[i].playerList[j].set3_player1) { %>
+																[<%=data[i].playerList[j].set3_player1%> - <%=data[i].playerList[j].set3_player2%>] &nbsp; 
+															<% } %>
+															<% if(data[i].playerList[j].set4_player1) { %>
+																[<%=data[i].playerList[j].set4_player1%> - <%=data[i].playerList[j].set4_player2%>] &nbsp;
+															<% } %>
+															<% if(data[i].playerList[j].set5_player1) { %>
+																[<%=data[i].playerList[j].set5_player1%> - <%=data[i].playerList[j].set5_player2%>] &nbsp;
+															<% } %>
+														</a>
+														<% } else { %> 														
+															<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">
+																&nbsp;<b> Court No : </b> <%=data[i].playerList[j].court_no %> 
+																&nbsp;&nbsp;&nbsp;<b> Date : </b><%=data[i].playerList[j].match_date%> 
+																&nbsp;&nbsp;&nbsp;<b> Time : </b><%=data[i].playerList[j].match_time%> 
+															</a>
+													<% } %>													
+												</td>
+											</tr>
+										</table>																		
+									<% } %>
+								<% } %>
+							</td>
+							<td> 
+								<% for(var j=0; j < data[i].playerList.length; j++){ %>													
+									<% if(data[i].playerList[j].round_no == 'Round-3') { %>										
+										<table style="margin-top:0px ;margin-bottom:0px;border-radius:15px; border-collapse:separate; border:0.05cm solid #73AD21;">
+											<tr style="height: 8.6cm;">
+												<td style="vertical-align: middle;">													
+													<% if(data[i].playerList[j].player1){ %> 
+														<%=data[i].playerList[j].player1 %> &nbsp;  <% if(data[i].playerList[j].winner == data[i].playerList[j].player1) { %> <i class="fa fa-trophy" style="float:right"></i> <% } %>
+													<%}else{%> TBD  <% } %> <br/>
+
+													<% if(data[i].playerList[j].player2){ %> 
+														<%=data[i].playerList[j].player2 %>  &nbsp; <% if(data[i].playerList[j].winner == data[i].playerList[j].player2) { %> <i class="fa fa-trophy" style="float:right"></i> <% } %>
+													<%}else{%> TBD  <% } %> <br/>
+																																				
+													<% if(data[i].playerList[j].set1_player1) { %>	
+														<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">														
+															<b> Score : </b> 
+															[<%=data[i].playerList[j].set1_player1%> - <%=data[i].playerList[j].set1_player2%>] &nbsp;
+															
+															<% if(data[i].playerList[j].set2_player1) { %> 
+																[<%=data[i].playerList[j].set2_player1%> - <%=data[i].playerList[j].set2_player2%>] &nbsp;
+															<% } %>
+															<% if(data[i].playerList[j].set3_player1) { %>
+																[<%=data[i].playerList[j].set3_player1%> - <%=data[i].playerList[j].set3_player2%>] &nbsp; 
+															<% } %>
+															<% if(data[i].playerList[j].set4_player1) { %>
+																[<%=data[i].playerList[j].set4_player1%> - <%=data[i].playerList[j].set4_player2%>] &nbsp;
+															<% } %>
+															<% if(data[i].playerList[j].set5_player1) { %>
+																[<%=data[i].playerList[j].set5_player1%> - <%=data[i].playerList[j].set5_player2%>] &nbsp;
+															<% } %>
+														</a>
+														<% } else { %> 														
+															<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">
+																&nbsp;<b> Court No : </b> <%=data[i].playerList[j].court_no %> 
+																&nbsp;&nbsp;&nbsp;<b> Date : </b><%=data[i].playerList[j].match_date%> 
+																&nbsp;&nbsp;&nbsp;<b> Time : </b><%=data[i].playerList[j].match_time%> 
+															</a>
+													<% } %>												
+												</td>
+											</tr>
+										</table>																
+									<% } %>
+								<% } %>
+							</td>						
+							
+							<% if(data[i].draw_no == '8' || data[i].draw_no == '16' || data[i].draw_no == '32' || data[i].draw_no == '64' || data[i].draw_no == '128'){ %>							
+								<td> 
+									<% for(var j=0; j < data[i].playerList.length; j++){ %>													
+										<% if(data[i].playerList[j].round_no == 'Round-4') { %>	
+											<table style="margin-top:0px ;margin-bottom:0px;border-radius:15px; border-collapse:separate; border:0.05cm solid #73AD21;">
+												<tr style="height: 17.4cm;">
+													<td style="vertical-align: middle;">													
+														<% if(data[i].playerList[j].player1){ %> 
+															<%=data[i].playerList[j].player1 %> &nbsp;  <% if(data[i].playerList[j].winner == data[i].playerList[j].player1) { %> <i class="fa fa-trophy" style="float:right"></i> <% } %>
+														<%}else{%> TBD  <% } %> <br/>
+
+														<% if(data[i].playerList[j].player2){ %> 
+															<%=data[i].playerList[j].player2 %>  &nbsp; <% if(data[i].playerList[j].winner == data[i].playerList[j].player2) { %> <i class="fa fa-trophy" style="float:right"></i> <% } %>
+														<%}else{%> TBD  <% } %> <br/>
+																																																		
+														<% if(data[i].playerList[j].set1_player1) { %>		
+															<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">																										
+															<b> Score : </b> 
+																[<%=data[i].playerList[j].set1_player1%> - <%=data[i].playerList[j].set1_player2%>] &nbsp;
+																
+																<% if(data[i].playerList[j].set2_player1) { %> 
+																	[<%=data[i].playerList[j].set2_player1%> - <%=data[i].playerList[j].set2_player2%>] &nbsp;
+																<% } %>
+																<% if(data[i].playerList[j].set3_player1) { %>
+																	[<%=data[i].playerList[j].set3_player1%> - <%=data[i].playerList[j].set3_player2%>] &nbsp; 
+																<% } %>
+																<% if(data[i].playerList[j].set4_player1) { %>
+																	[<%=data[i].playerList[j].set4_player1%> - <%=data[i].playerList[j].set4_player2%>] &nbsp;
+																<% } %>
+																<% if(data[i].playerList[j].set5_player1) { %>
+																	[<%=data[i].playerList[j].set5_player1%> - <%=data[i].playerList[j].set5_player2%>] &nbsp;
+																<% } %>
+															</a>
+															<% } else { %> 														
+																<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">																										
+																	&nbsp;<b> Court No : </b> <%=data[i].playerList[j].court_no %> 
+																	&nbsp;&nbsp;&nbsp;<b> Date : </b><%=data[i].playerList[j].match_date%> 
+																	&nbsp;&nbsp;&nbsp;<b> Time : </b><%=data[i].playerList[j].match_time%> 
+																</a>	
+														<% } %>													
+													</td>
+												</tr>
+											</table>											
+										<% } %>
+									<% } %>
+								</td>													
+							<% } %>
+
+							<% if(data[i].draw_no == '16' || data[i].draw_no == '32' || data[i].draw_no == '64' || data[i].draw_no == '128') { %>
+								<td> 
+									<% for(var j=0; j < data[i].playerList.length; j++){ %>													
+										<% if(data[i].playerList[j].round_no == 'Round-5') { %>																													
+											<table style="margin-top:0px ;margin-bottom:0px;border-radius:15px; border-collapse:separate; border:0.05cm solid #73AD21;">
+												<tr style="height: 35cm;">
+														<td style="vertical-align: middle;">													
+														<% if(data[i].playerList[j].player1){ %> 
+															<%=data[i].playerList[j].player1 %> &nbsp;  <% if(data[i].playerList[j].winner == data[i].playerList[j].player1) { %> <i class="fa fa-trophy" style="float:right"></i> <% } %>
+														<%}else{%> TBD  <% } %> <br/>
+
+														<% if(data[i].playerList[j].player2){ %> 
+															<%=data[i].playerList[j].player2 %>  &nbsp; <% if(data[i].playerList[j].winner == data[i].playerList[j].player2) { %> <i class="fa fa-trophy" style="float:right"></i> <% } %>
+														<%}else{%> TBD  <% } %> <br/>													
+																											
+														<% if(data[i].playerList[j].set1_player1) { %>
+														<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">
+															<b> Score : </b> 
+																[<%=data[i].playerList[j].set1_player1%> - <%=data[i].playerList[j].set1_player2%>] &nbsp;
+																
+																<% if(data[i].playerList[j].set2_player1) { %> 
+																	[<%=data[i].playerList[j].set2_player1%> - <%=data[i].playerList[j].set2_player2%>] &nbsp;
+																<% } %>
+																<% if(data[i].playerList[j].set3_player1) { %>
+																	[<%=data[i].playerList[j].set3_player1%> - <%=data[i].playerList[j].set3_player2%>] &nbsp; 
+																<% } %>
+																<% if(data[i].playerList[j].set4_player1) { %>
+																	[<%=data[i].playerList[j].set4_player1%> - <%=data[i].playerList[j].set4_player2%>] &nbsp;
+																<% } %>
+																<% if(data[i].playerList[j].set5_player1) { %>
+																	[<%=data[i].playerList[j].set5_player1%> - <%=data[i].playerList[j].set5_player2%>] &nbsp;
+																<% } %>
+															</a>
+															<% } else { %> 														
+																<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">
+																	&nbsp;<b> Court No : </b> <%=data[i].playerList[j].court_no %> 
+																	&nbsp;&nbsp;&nbsp;<b> Date : </b><%=data[i].playerList[j].match_date%> 
+																	&nbsp;&nbsp;&nbsp;<b> Time : </b><%=data[i].playerList[j].match_time%> 
+																</a>	
+														<% } %>													
+													</td>
+												</tr>
+											</table>																			
+										<% } %>
+									<% } %>
+								</td>														
+							<% } %> 
+
+							<% if(data[i].draw_no == '32' || data[i].draw_no == '64' || data[i].draw_no == '128') { %>							
+								<td> 
+									<% for(var j=0; j < data[i].playerList.length; j++){ %>													
+										<% if(data[i].playerList[j].round_no == 'Round-6') { %>																																															
+											<table style="margin-top:0px ;margin-bottom:0px;border-radius:15px; border-collapse:separate; border:0.05cm solid #73AD21;">
+												<tr style="height: 70.2cm;">
+													<td style="vertical-align: middle;">													
+														<% if(data[i].playerList[j].player1){ %> 
+															<%=data[i].playerList[j].player1 %> &nbsp;  <% if(data[i].playerList[j].winner == data[i].playerList[j].player1) { %> <i class="fa fa-trophy" style="float:right"></i> <% } %>
+														<%}else{%> TBD  <% } %> <br/>
+
+														<% if(data[i].playerList[j].player2){ %> 
+															<%=data[i].playerList[j].player2 %>  &nbsp; <% if(data[i].playerList[j].winner == data[i].playerList[j].player2) { %> <i class="fa fa-trophy" style="float:right"></i> <% } %>
+														<%}else{%> TBD  <% } %> <br/>													
+																																								
+														<% if(data[i].playerList[j].set1_player1) { %>	
+														<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">
+															<b> Score : </b> 
+																[<%=data[i].playerList[j].set1_player1%> - <%=data[i].playerList[j].set1_player2%>] &nbsp;
+																
+																<% if(data[i].playerList[j].set2_player1) { %> 
+																	[<%=data[i].playerList[j].set2_player1%> - <%=data[i].playerList[j].set2_player2%>] &nbsp;
+																<% } %>
+																<% if(data[i].playerList[j].set3_player1) { %>
+																	[<%=data[i].playerList[j].set3_player1%> - <%=data[i].playerList[j].set3_player2%>] &nbsp; 
+																<% } %>
+																<% if(data[i].playerList[j].set4_player1) { %>
+																	[<%=data[i].playerList[j].set4_player1%> - <%=data[i].playerList[j].set4_player2%>] &nbsp;
+																<% } %>
+																<% if(data[i].playerList[j].set5_player1) { %>
+																	[<%=data[i].playerList[j].set5_player1%> - <%=data[i].playerList[j].set5_player2%>] &nbsp;
+																<% } %>
+															</a>
+															<% } else { %> 														
+																<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">
+																	&nbsp;<b> Court No : </b> <%=data[i].playerList[j].court_no %> 
+																	&nbsp;&nbsp;&nbsp;<b> Date : </b><%=data[i].playerList[j].match_date%> 
+																	&nbsp;&nbsp;&nbsp;<b> Time : </b><%=data[i].playerList[j].match_time%> 
+																</a>	
+														<% } %>													
+													</td>
+												</tr>
+											</table>																				
+										<% } %>
+									<% } %>
+								</td>												
+							<% } %> 
+
+							<% if(data[i].draw_no == '64' || data[i].draw_no == '128') { %>							
+								<td> 
+									<% for(var j=0; j < data[i].playerList.length; j++){ %>													
+										<% if(data[i].playerList[j].round_no == 'Round-7') { %>																													
+											<table style="margin-top:0px ;margin-bottom:0px;border-radius:15px; border-collapse:separate; border:0.05cm solid #73AD21;">
+												<tr style="height: 140.6cm;">
+													<td style="vertical-align: middle;">														
+														<% if(data[i].playerList[j].player1){ %> 
+															<%=data[i].playerList[j].player1 %> &nbsp;  <% if(data[i].playerList[j].winner == data[i].playerList[j].player1) { %> <i class="fa fa-trophy" style="float:right"></i> <% } %>
+														<%}else{%> TBD  <% } %> <br/>
+
+														<% if(data[i].playerList[j].player2){ %> 
+															<%=data[i].playerList[j].player2 %>  &nbsp; <% if(data[i].playerList[j].winner == data[i].playerList[j].player2) { %> <i class="fa fa-trophy" style="float:right"></i> <% } %>
+														<%}else{%> TBD  <% } %> <br/>
+																																																				
+														<% if(data[i].playerList[j].set1_player1) { %>	
+														<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">
+															<b> Score : </b> 
+																[<%=data[i].playerList[j].set1_player1%> - <%=data[i].playerList[j].set1_player2%>] &nbsp;
+																
+																<% if(data[i].playerList[j].set2_player1) { %> 
+																	[<%=data[i].playerList[j].set2_player1%> - <%=data[i].playerList[j].set2_player2%>] &nbsp;
+																<% } %>
+																<% if(data[i].playerList[j].set3_player1) { %>
+																	[<%=data[i].playerList[j].set3_player1%> - <%=data[i].playerList[j].set3_player2%>] &nbsp; 
+																<% } %>
+																<% if(data[i].playerList[j].set4_player1) { %>
+																	[<%=data[i].playerList[j].set4_player1%> - <%=data[i].playerList[j].set4_player2%>] &nbsp;
+																<% } %>
+																<% if(data[i].playerList[j].set5_player1) { %>
+																	[<%=data[i].playerList[j].set5_player1%> - <%=data[i].playerList[j].set5_player2%>] &nbsp;
+																<% } %>
+															</a>
+															<% } else { %> 														
+																<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">
+																	&nbsp;<b> Court No : </b> <%=data[i].playerList[j].court_no %> 
+																	&nbsp;&nbsp;&nbsp;<b> Date : </b><%=data[i].playerList[j].match_date%> 
+																	&nbsp;&nbsp;&nbsp;<b> Time : </b><%=data[i].playerList[j].match_time%> 
+																</a>	
+														<% } %>													
+													</td>
+												</tr>
+											</table>												
+										<% } %>
+									<% } %>
+								</td>														
+							<% } %> 							
+							<% if(data[i].draw_no == '128') { %>							
+								<td> 
+									<% for(var j=0; j < data[i].playerList.length; j++){ %>													
+										<% if(data[i].playerList[j].round_no == 'Round-8') { %>																																
+											<table style="margin-top:0px ;margin-bottom:0px;border-radius:15px; border-collapse:separate; border:0.05cm solid #73AD21;">
+												<tr style="height: 281.4cm;">
+													<td style="vertical-align: middle;">														
+														<% if(data[i].playerList[j].player1){ %> 
+															<%=data[i].playerList[j].player1 %> &nbsp;  <% if(data[i].playerList[j].winner == data[i].playerList[j].player1) { %> <i class="fa fa-trophy" style="float:right"></i> <% } %>
+														<%}else{%> TBD  <% } %> <br/>
+
+														<% if(data[i].playerList[j].player2){ %> 
+															<%=data[i].playerList[j].player2 %>  &nbsp; <% if(data[i].playerList[j].winner == data[i].playerList[j].player2) { %> <i class="fa fa-trophy" style="float:right"></i> <% } %>
+														<%}else{%> TBD  <% } %> <br/>
+																																																			
+														<% if(data[i].playerList[j].set1_player1) { %>
+														<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">
+															<b> Score : </b> 
+																[<%=data[i].playerList[j].set1_player1%> - <%=data[i].playerList[j].set1_player2%>] &nbsp;
+																
+																<% if(data[i].playerList[j].set2_player1) { %> 
+																	[<%=data[i].playerList[j].set2_player1%> - <%=data[i].playerList[j].set2_player2%>] &nbsp;
+																<% } %>
+																<% if(data[i].playerList[j].set3_player1) { %>
+																	[<%=data[i].playerList[j].set3_player1%> - <%=data[i].playerList[j].set3_player2%>] &nbsp; 
+																<% } %>
+																<% if(data[i].playerList[j].set4_player1) { %>
+																	[<%=data[i].playerList[j].set4_player1%> - <%=data[i].playerList[j].set4_player2%>] &nbsp;
+																<% } %>
+																<% if(data[i].playerList[j].set5_player1) { %>
+																	[<%=data[i].playerList[j].set5_player1%> - <%=data[i].playerList[j].set5_player2%>] &nbsp;
+																<% } %>
+															</a>
+															<% } else { %> 														
+																<a href="#" style="font-size:13px;color: red" onClick="javascript:addDraw('<%= data[i].playerList[j].match_no %>','<%= data[i].playerList[j].tournament_id %>','<%= data[i].playerList[j].draw_no %>','<%= data[i].playerList[j].round_no %>','<%= data[i].playerList[j].reg_no1 %>','<%= data[i].playerList[j].reg_no2 %>','<%= data[i].playerList[j].player1 %>','<%= data[i].playerList[j].player2 %>','<%= data[i].playerList[j].court_no %>','<%= data[i].playerList[j].match_date %>','<%= data[i].playerList[j].match_time %>','<%= data[i].playerList[j].set1_player1 %>','<%= data[i].playerList[j].set2_player1 %>','<%= data[i].playerList[j].set3_player1 %>','<%= data[i].playerList[j].set4_player1 %>','<%= data[i].playerList[j].set5_player1 %>','<%= data[i].playerList[j].set1_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set3_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].set5_player2 %>','<%= data[i].playerList[j].winning_reason %>','<%= data[i].playerList[j].winner %>');">
+																	&nbsp;<b> Court No : </b> <%=data[i].playerList[j].court_no %> 
+																	&nbsp;&nbsp;&nbsp;<b> Date : </b><%=data[i].playerList[j].match_date%> 
+																	&nbsp;&nbsp;&nbsp;<b> Time : </b><%=data[i].playerList[j].match_time%> 
+																</a>	
+														<% } %>													
+													</td>
+												</tr>
+											</table>																
+										<% } %>
+									<% } %>
+								</td>												
+							<% } %>	
+						</tr>																
+					</tbody>
+					<!-- <table>
+						<tr>
+					 		<p> 
+					 			<b style="color: red">Notice:</b><b style="color: black"> WALKOVER WOULD BE GIVEN IF PLAYERS DO NOT REPORT WITHIN 15 MINUTES OF THEIR SCHEDULED TIME </b>
+					 		</p>
+					 		<br/>										
+					 	</tr>
+					</table> -->
+			</table>							
+	<% } %>
+<% } %>
+<!-- </div> -->
+<br/><br/>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-9">        
+				<div class="modal fade" id="createDraw" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content" style="width: 550px;">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+								<h4 class="modal-title" id="myModalLabel"> Player Info </h4>
+							</div>
+							<form class="form-horizontal" method="post" id="createDrawUser" name="createDrawUser">
+								<div class="modal-body">
+									<input type="hidden" id="tournamentid" name="tournamentid" value="" >
+									<input type="hidden" id="drawno" name="drawno" value="" > 
+									<input type="hidden" id="roundNo" name="roundNo" value="" > 
+									<input type="hidden" id="gender" value="">
+									<input type="hidden" id="age" value="">
+
+									<input type="hidden" id="matchno" name="matchno" value="">									
+									<input type="hidden" id="reg_no1" name="reg_no1" value="">	
+									<input type="hidden" id="reg_no2" name="reg_no2" value="">	
+									<input type="text" id="player1" name="player1"  value="" placeholder="Enter Player1 Reg. No"  autocomplete="off" class="form-control placeholder-no-fix" required>
+									<br>								
+									<input type="text" id="player2" name="player2"  value="" placeholder="Enter Player2 Reg. No"  autocomplete="off" class="form-control placeholder-no-fix" required>
+									<br>
+									<input type="number" id="courtno" name="courtno"  value="" placeholder="Enter Court No"  autocomplete="off" class="form-control placeholder-no-fix" onkeypress="return isNumber(event)" required>
+									<br>
+									<input type="date" id="date" name="date"  value="" placeholder="Enter Date"  autocomplete="off" class="form-control placeholder-no-fix" required>
+									<br>
+									<input type="time" id="time" name="time"  value="" placeholder="Enter Time"  autocomplete="off" class="form-control placeholder-no-fix" required>																					
+								</div>	
+								<!-- <hr> -->
+								<div class="modal-header" style="padding: 5px">									
+									<h4 class="modal-title" id="myModalLabel"> Score </h4>
+								</div>
+								<table border="1" style="width:50%" align="center">
+									<tbody>
+										<tr id="getName1"> 
+											<th style="width:50%;  padding: 4px"  id="Player1"></th>
+											<td> <input style="width:30px" type="text" id="score11" name="score11"> </td>
+											<td> <input style="width:30px" type="text" id="score12" name="score12"> </td>
+											<td> <input style="width:30px" type="text" id="score13" name="score13"> </td>
+											<td> <input style="width:30px" type="text" id="score14" name="score14"> </td>
+											<td> <input style="width:30px" type="text" id="score15" name="score15"> </td>
+										</tr>
+										<tr id="getName2">	
+											<th style="width:50%; padding: 4px"  id="Player2"> </th>
+											<td> <input style="width:30px" type="text" id="score21" name="score21"> </td>
+											<td> <input style="width:30px" type="text" id="score22" name="score22"> </td>
+											<td> <input style="width:30px" type="text" id="score23" name="score23"> </td>
+											<td> <input style="width:30px" type="text" id="score24" name="score24"> </td>
+											<td> <input style="width:30px" type="text" id="score25" name="score25"> </td>
+										</tr>										
+									</tbody>
+								</table>				
+								<br/>
+								<table border="1" style="width:auto; padding: 4px" align="center">
+									<tbody>
+										<tr>
+											<th style="width: auto"> Winner </th>	
+										</tr>										
+										<tr/>																				
+											<td>
+												 <input type="radio" class="winner" name="winner" id="NoWinner" value="0" style="width:auto">  <b> No Winner </b>
+											</td>
+										</tr>										
+										<tr>											
+											<td>												
+												<input type="radio" class="winner" name="winner" id="Player1" value="1" style="width:auto">  <b id="Player3"> </b> <br>  												
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<input type="radio" class="winner" name="winner" id="Player2" value="2" style="width:auto">  <b id="Player4">  </b>
+											</td>											
+										</tr>
+									</tbody>
+								</table>
+								<div class="modal-footer">
+									<CENTER>  <p id="errorcmass" style="color: red;"></p></CENTER>
+									<button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+									<button class="btn btn-success createnewdrawbtn sentinvitebtn" type="button" id="sendinvibid" onclick="savePlayerInfo()"><i class="fa fa-paper-plane"></i> Save </button>
+									<button class="btn btn-info" type="button" id="buttonsumbit" style="display: none;"><i class="fa fa-spinner fa-pulse"></i> Please Wait...</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+	
+	<script type="text/javascript">	
+
+	$(window).on('load', function() {	
+		var url_string = window.location.href;
+		var url = new URL(url_string);
+		var gender = url.searchParams.get("gender");			
+		var age = url.searchParams.get("age");	
+		document.getElementById("gender").value = gender;
+		document.getElementById("age").value = age;		
+		
+		$.ajax({
+			dataType: 'json',
+			type: 'GET',
+			url: path+'getTournamentData',
+			data:{
+				gender:gender, age:age
+			}
+		}).success(function(response){
+			//console.log(response);
+			var tournamentName = response[0].name;
+			var gender = response[0].gender;
+			var age = response[0].age;
+			var startDate = response[0].startdate;
+			var endDate = response[0].enddate;
+
+			$('#tournamentName1').html(tournamentName);
+			$("#gender1").html(gender);
+			$("#age1").html(age);
+			$("#startDate1").html(startDate);
+			$("#endDate1").html(endDate);
+
+			/*document.getElementById('tournamentName1').innerHTML = tournamentName
+			document.getElementById('gender1').innerHTML = gender
+			document.getElementById('age1').innerHTML = age
+			document.getElementById('startDate1').innerHTML = startDate
+			document.getElementById('endDate1').innerHTML = endDate*/
+		});			
+
+		$.ajax({	
+			dataType: 'json',
+			type:'GET',
+			url:path+'getDrawListDetails',
+			data:{
+				gender:gender,age:age
+			}			
+		}).success(function(response){	
+			//console.log(response);			
+			for(var i=0;i<response.length;i++){
+				var tournamentid = response[i].tournament_id;
+				var roundno = response[i].round_no;
+				var drawno = response[i].draw_no;
+				var matchno = response[i].match_no;
+				var reg_no1 = response[i].reg_no1;
+				var reg_no2 = response[i].reg_no2;
+				var player1 = response[i].player1;
+				var player2 = response[i].player2;
+				var courtno = response[i].court_no;
+				var matchdate = response[i].match_date;
+				var matchtime = response[i].match_time;
+				var winner = response[i].winner;
+				var set1_player1 = response[i].set1_player1;
+				var set2_player1 = response[i].set2_player1;
+				var set3_player1 = response[i].set3_player1;
+				var set4_player1 = response[i].set4_player1;
+				var set5_player1 = response[i].set5_player1;
+				var set1_player2 = response[i].set1_player2;
+				var set2_player2 = response[i].set2_player2;
+				var set3_player2 = response[i].set3_player2;
+				var set4_player2 = response[i].set4_player2;
+				var set5_player2 = response[i].set5_player2;
+				var winning_reason = response[i].Winner_reason;
+			}
+						
+		}).error(function(response){
+			console.log(response);
+		});
+	});
+
+	$('#player1').on('keyup', function () {
+		var player1_no = $("#player1").val();
+		var gender = $("#gender").val();
+		var age = $("#age").val();		
+		if(player1_no.length == 6){
+			findName1(player1_no,gender,age);
+		}			
+	});
+
+	$('#player2').on('keyup', function () {
+		var player2_no = $("#player2").val();
+		var gender = $("#gender").val();
+		var age = $("#age").val();	
+		if(player2_no.length == 6){
+			findName2(player2_no,gender,age);	
+		}		
+		
+	});
+
+	function findName1(player1_no,gender,age) {		
+		$.ajax({				 						
+			"type": "GET",
+			url:path+'getPlayerName1',
+			data:{
+				player1_no:player1_no,gender:gender,age:age
+			},
+		
+		}).success(function(result){	
+			if(result === 'duplicate'){
+				alert("Player already added for Draw!");
+				return;  
+			}
+			if(result === 'noentry'){
+				alert("Player is not added in Sign List!");
+				return; 
+			} else {
+				var name1 = result[0].first_name + " " + result[0].last_name + " " +result[0].state;			
+				$('#player1').val(name1);		
+				$('#reg_no1').val(result[0].reg_no);	
+			}				
+										
+		}).error(function(result) {			
+			alert("Player is not added in Sign List!");	
+     		console.log("failure value" + JSON.stringify(result));	     		
+		});  		
+	} 
+
+	function findName2(player2_no,gender,age) {			
+		$.ajax({				 						
+			"type": "GET",
+			url:path+'getPlayerName2',
+			data:{
+				player2_no:player2_no,gender:gender,age:age
+			},
+		
+		}).success(function(result){	
+			if(result == 'duplicate'){
+				alert("Player already added for Draw!");
+				return; 
+			}
+			if(result == 'noentry'){
+				alert("Player is not added in Sign List!");
+				return; 
+			} else {				
+				var name2 = result[0].first_name + " " + result[0].last_name + " " +result[0].state;			
+				$('#player2').val(name2);
+				$('#reg_no2').val(result[0].reg_no);	
+			}													
+		}).error(function(result) {			
+     		console.log("failure value" + result);	     		
+     		alert("Player is not added in Sign List!");
+		});  		
+	} 
+
+	function addDraw(matchNo, tournamentId , drawNo, roundNo ,reg_no1, reg_no2, playerName1, playerName2, courtno, matchdate, matchtime, set1_player1, set1_player2,set1_player3, set1_player4,set1_player5, set2_player1, set2_player2, set2_player3, set2_player4, set2_player5, winningReason, winner){	
+		$('#createDrawUser').trigger("reset");
+		document.getElementById("matchno").value = matchNo ;
+		document.getElementById("tournamentid").value = tournamentId ;
+		document.getElementById("drawno").value = drawNo ;
+		document.getElementById("roundNo").value = roundNo ;	
+		document.getElementById("reg_no1").value = reg_no1 ;
+		document.getElementById("reg_no2").value = reg_no2 ;
+		document.getElementById("player1").value = playerName1 ;
+		document.getElementById("player2").value = playerName2;
+		document.getElementById("Player1").innerHTML = playerName1;
+		document.getElementById("Player2").innerHTML = playerName2 ;
+		document.getElementById("Player3").innerHTML = playerName1;
+		document.getElementById("Player4").innerHTML = playerName2 ;
+		document.getElementById("courtno").value = courtno;
+		document.getElementById("date").value = matchdate;
+		document.getElementById("time").value = matchtime;
+		document.getElementById("score11").value = set1_player1;
+		document.getElementById("score12").value = set1_player2;
+		document.getElementById("score13").value = set1_player3;
+		document.getElementById("score14").value = set1_player4;
+		document.getElementById("score15").value = set1_player5;
+		document.getElementById("score21").value = set2_player1;
+		document.getElementById("score22").value = set2_player2;
+		document.getElementById("score23").value = set2_player3;
+		document.getElementById("score24").value = set2_player4;
+		document.getElementById("score25").value = set2_player5;
+		//document.getElementById("winningReason").value = winning_reason;
+		if(playerName1.length == 0 || playerName2.length == 0 || winner.length == 0) {
+			document.querySelector('input[id = "NoWinner"]').checked = true;	
+			document.querySelector('input[id = "Player1"]').checked	= false;	
+			document.querySelector('input[id = "Player2"]').checked	= false;
+		} else if(playerName1 == winner){
+			document.querySelector('input[id = "Player1"]').checked	= true;	
+		} else if(playerName2 == winner){
+			document.querySelector('input[id = "Player2"]').checked	= true;			
+		} else {
+			document.querySelector('input[id = "NoWinner"]').checked = true;	
+			document.querySelector('input[id = "Player1"]').checked	= false;	
+			document.querySelector('input[id = "Player2"]').checked	= false;
+		}
+		$('#createDraw').modal('show');	
+	} 
+
+	function savePlayerInfo() {			
+			var gender = document.getElementById("gender").value;
+			var age = document.getElementById("age").value;
+			var tournamentId = document.getElementById("tournamentid").value;			
+			var roundNo = document.getElementById("roundNo").value;
+			var matchno = document.getElementById("matchno").value;
+			var drawno = document.getElementById("drawno").value;
+			var reg_no1 = document.getElementById("reg_no1").value;
+			var reg_no2 = document.getElementById("reg_no2").value;
+			var player1_name = document.getElementById("player1").value;
+			var player2_name = document.getElementById("player2").value;
+			var courtno = document.getElementById("courtno").value;
+			var date = document.getElementById("date").value;
+			var time = document.getElementById("time").value;
+
+			var score11 = document.getElementById("score11").value;
+			var score12 = document.getElementById("score12").value;
+			var score13 = document.getElementById("score13").value;			
+			var score14 = document.getElementById("score14").value;
+			var score15 = document.getElementById("score15").value;
+			var score21 = document.getElementById("score21").value;
+			var score22 = document.getElementById("score22").value;
+			var score23 = document.getElementById("score23").value;
+			var score24 = document.getElementById("score24").value;
+			var score25 = document.getElementById("score25").value;
+			
+			var player1 = document.querySelector('input[id = "Player1"]:checked');
+			var player2 = document.querySelector('input[id = "Player2"]:checked');
+			
+			var Row1 = document.getElementById("getName1");
+			var Cells1 = Row1.getElementsByTagName("th");
+			var player1Winner = Cells1[0].innerText;
+
+			var Row2 = document.getElementById("getName2");
+			var Cells2 = Row2.getElementsByTagName("th");
+			var player2Winner = Cells2[0].innerText;
+
+			$("#buttonsumbit").show();
+			$(".createnewdrawbtn").hide();
+			
+			var winner = document.querySelector('.winner:checked').value;						
+		    
+			$.ajax({	
+					type:'POST',
+					url:path+'savePlayerinfo',
+					data:{
+						gender:gender, age:age, tournamentId:tournamentId,roundNo:roundNo, drawno:drawno, matchno:matchno, reg_no1:reg_no1, reg_no2:reg_no2, player1_name:player1_name,player2_name:player2_name,courtno:courtno,date:date,time:time,score11:score11, score12:score12, score13:score13, score14:score14, score15:score15, score21:score21, score22:score22, score23:score23, score24:score24, score25:score25, winner:winner
+					},
+
+				}).success(function(response){
+					alert(response.message);
+						$('#createDraw').modal('hide');
+						$("#buttonsumbit").hide();	
+						$(".createnewdrawbtn").show();
+						$('#createDrawUser').trigger("reset");
+						location.reload();
+				}).error(function(response) {
+	 				alert(response.message);
+	 				$('#createDraw').modal('show');
+	 				$('#createDrawUser').trigger("reset");
+	 			});		     		
+		}
+
+		function createDraw(){
+			var url_string = window.location.href;
+			var url = new URL(url_string);
+			var gender = url.searchParams.get("gender");			
+			var age = url.searchParams.get("age");				
+			$.ajax({	
+				dataType: 'json',
+				type:'POST',
+				url:path+'createDraw',	
+				data:{
+					gender:gender, age:age
+				}		
+			}).success(function(response){
+				alert(response.message);
+				location.reload();
+			}).error(function(response){
+				alert(response.message);
+			})
+		}
+
+		function fnExcelReport() {	
+			 var dt = new Date();
+	        var day = dt.getDate();
+	        var month = dt.getMonth() + 1;
+	        var year = dt.getFullYear();
+	        var hour = dt.getHours();
+	        var mins = dt.getMinutes();
+	        var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;			
+		    var tab_text = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
+		    tab_text = tab_text + '<head><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
+
+		    tab_text = tab_text + '<x:Name>Test Sheet</x:Name>';
+
+		    tab_text = tab_text + '<x:WorksheetOptions><x:Panes></x:Panes></x:WorksheetOptions></x:ExcelWorksheet>';
+		    tab_text = tab_text + '</x:ExcelWorksheets></x:ExcelWorkbook></xml></head><body>';
+
+		    tab_text = tab_text + "<table border='1px'>";
+		    tab_text = tab_text + $('#myTable').html();
+		    tab_text = tab_text + '</table></body></html>';
+
+		    var data_type = 'data:application/vnd.ms-excel';
+		    
+		    var ua = window.navigator.userAgent;
+		    var msie = ua.indexOf("MSIE ");
+		    
+		    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+		        if (window.navigator.msSaveBlob) {
+		            var blob = new Blob([tab_text], {
+		                type: "application/csv;charset=utf-8;"
+		            });
+		            navigator.msSaveBlob(blob, 'Result Data.xls');
+		        }
+		    } else {
+		        $('#excelSheet').attr('href', data_type + ', ' + encodeURIComponent(tab_text));
+		        $('#excelSheet').attr('download', 'Result Data_'+gender+'_'+age+'_'+ postfix + '.xls');
+		    }		   
+		}
+
+		$(document).ready(function(){
+			//getting values of current time for generating the file name
+	        var dt = new Date();
+	        var day = dt.getDate();
+	        var month = dt.getMonth() + 1;
+	        var year = dt.getFullYear();
+	        var hour = dt.getHours();
+	        var mins = dt.getMinutes();
+	        var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+	        var url_string = window.location.href;
+			var url = new URL(url_string);
+			var gender = url.searchParams.get("gender");			
+			var age = url.searchParams.get("age");	
+
+			var element = $("#myTable"); // global variable
+			var getCanvas;
+			html2canvas(element, {
+         		onrendered: function (canvas) {
+                	getCanvas = canvas;
+                }
+              }); 	
+			$("#test").on('click', function () {
+		    	var imgageData = getCanvas.toDataURL("image/png");		    	 		    	
+		    	var newData = imgageData.replace("/^data:image\/png/,base64, data:application/octet-stream");
+		    	$("#test").attr("download", 'Draw Data_'+gender+'_'+age+'_'+postfix +".png").attr("href", newData);
+			});
+		});
+
+		function deleteDraw(){
+			var deleteDraw = confirm("Are you sure ? Draw will be deleted!");
+			if(deleteDraw == true){
+				 var url_string = window.location.href;
+				var url = new URL(url_string);
+				var gender = url.searchParams.get("gender");			
+				var age = url.searchParams.get("age");				
+				$.ajax({	
+					dataType: 'json',
+					type:'POST',
+					url:path+'deleteDraw',	
+					data:{
+						gender:gender, age:age
+					}		
+				}).success(function(response){
+					alert(response.message);
+					location.reload();
+				}).error(function(response){
+					alert(response.message);
+				})
+			} else {
+				return;
+			}		
+		}
+		
+			
+
+			$('#savePDF').click(function () {
+				var doc = new jsPDF('p','pt','a4');
+				var specialElementHandlers = {
+				    '#editor': function (element, renderer) {
+				        return true;
+				    }
+				};
+
+				 var dt = new Date();
+		        var day = dt.getDate();
+		        var month = dt.getMonth() + 1;
+		        var year = dt.getFullYear();
+		        var hour = dt.getHours();
+		        var mins = dt.getMinutes();
+		        var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+
+		        var url_string = window.location.href;
+				var url = new URL(url_string);
+				var gender = url.searchParams.get("gender");			
+				var age = url.searchParams.get("age");	
+
+			    doc.fromHTML(
+		    		$('#myTable').html(), 15, 15, 
+		    		{			     
+		    			'width': 522,   
+		            	'elementHandlers': specialElementHandlers
+		    		});
+			    doc.save('Draw Data_'+gender+'_'+age+'_'+postfix +'.pdf');
+			});
+		
+
+	</script>
+<%- include footer %>

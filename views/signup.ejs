@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
+
+	<title>Ahemdabad International Sports Academy</title>
+
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+	<!-- CSS -->
+	<link rel="stylesheet" href="/css/bootstrap.css" />
+	<link rel="stylesheet" href="/css/style.css" />
+	<!-- Set Icon-->
+	<link rel="icon" type="image/png" href="/images/aita.png" sizes="32x32">	
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>	
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>	
+</head>
+	<body>
+		<div class="container col-sm-12" id="mainform">
+			<div id="signupbox" style=" margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<div class="panel-title">Sign Up</div>
+						<div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" href="/">Sign In</a></div>
+					</div> 
+
+					<div class="panel-body" >						
+						<form class="form-horizontal" role="form" method="post" action="/signup" onSubmit="return checkblank(this);">
+													
+							<div class="form-group">
+								<label for="user_email" class="col-md-3 control-label">Email ID</label>
+								<div class="col-md-9">
+									<input type="text" class="form-control" name="user_email" placeholder="Enter Email ID">
+								</div>
+							</div>							
+							<div class="form-group">
+								<label for="user_password" class="col-md-3 control-label">Password</label>
+								<div class="col-md-9">
+									<input type="password" class="form-control" name="user_password" placeholder="Enter password">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="confirm_password" class="col-md-3 control-label">Confirm Password</label>
+								<div class="col-md-9">
+									<input type="password" class="form-control" name="confirm_password" placeholder="Enter Retype Password">
+								</div>
+							</div>      														                  
+							<div class="form-group">                                
+								<div class="col-md-offset-3 col-md-9">									
+									<button id="btn-signup" type="submit" class="btn btn-info"><i class="icon-hand-right"></i> Sign Up</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+

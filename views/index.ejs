@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<head>
+   	<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
+
+	<title>Ahemdabad International Sports Academy</title>
+	<link rel="icon" type="image/png" href="/images/aita.png" sizes="32x32">
+
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+	
+	<div class="modal fade" id="forgotpassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Reset your Password</h4>
+				</div>
+									
+				 <form class="form-horizontal" method="post" id="resetpassword" name="resetpassword">
+					<div class="modal-body">
+						<p><b>Enter your Registered e-mail address</b></p>
+						<input type="email" id="emailid" name="emailid" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">
+					</div>
+					<div class="modal-footer">
+						<CENTER>  <p id="errorcmass" style="color: red;"></p></CENTER>													
+						<button class="btn btn-success createnewuserbtn sentinvitebtn" type="button" id="sendinvibid" onclick="resetPassFunciton()"><i class="fa fa-paper-plane"></i> Submit</button>
+						<button class="btn btn-info" type="button" id="buttonsumbit" style="display: none;"><i class="fa fa-spinner fa-pulse"></i> Please Wait...</button>											
+					</div>						
+				</form>					
+			</div>			
+		</div>		
+	</div>
+
+	<div class="container">   
+		<div id="loginbox" style="overflow:auto;margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                   
+			<div class="panel panel-info" >
+				<div class="panel-heading">
+					<div class="panel-title">Sign In</div>					
+				</div>    
+
+				<div style="padding-top:30px" class="panel-body" >
+					<% if (message.length > 0) { %>
+						<div class="alert alert-info col-sm-12"><%= message %></div>
+					<% } %>
+
+					<form id="loginform" class="form-horizontal" role="form" method="post" action="/login">
+						<div style="margin-bottom: 25px" class="input-group">
+							<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+							<input type="text" class="form-control" id="user_email" name="user_email" value="" placeholder="Enter EmailID">                                 
+						</div>
+						<div style="margin-bottom: 25px" class="input-group">
+							<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+							<input id="login-password" type="password" class="form-control" name="user_password" value="" placeholder="Enter Password">
+						</div>
+
+						<div style="margin-top:10px" class="form-group">
+							<div class="col-sm-12 controls">
+								<button id="btn-login" type="submit" class="btn btn-success">Login</button>                                    
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="col-md-12 control">
+								<div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
+									Don't have an account!
+									<a href="/signup">
+										Sign Up Here
+									</a>
+								</div>
+							</div>
+						</div> 
+						<div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#" data-toggle="modal" data-target="#forgotpassword">Forgot password?</a></div>
+					</form> 
+				</div>                    
+			</div> 
+		</div>
+	</div>
+
+	<script type="text/javascript">
+	//var path = 'http://54.71.88.177/';
+	//var path = '/';
+	var path='http://34.210.2.217/';
+		//Reset Password**********************************		
+		function resetPassFunciton() 
+		{	  			
+			var emailid=document.getElementById("emailid").value;
+			$("#buttonsumbit").show();
+			$(".createnewuserbtn").hide();
+			if(emailid=="")
+			{
+				$("#errorcmass").html("Please provide e-mail address");
+				$("#buttonsumbit").hide();
+				$(".createnewuserbtn").show();
+				return false;
+			}
+			 $.ajax({	
+					type:'POST',
+					url:path+'resetpassword',
+					data:{emailid:emailid},
+					success:function(result)
+					{ 								
+						if(result== "success")
+						{			
+							alert("Mail Sent Successfully.");							
+							$('#forgotpassword').modal('hide');							
+							window.location.reload();							
+						}else if(result== "fail"){
+							alert("Enter valid e-mail address");
+							$("#buttonsumbit").hide();
+							$(".createnewuserbtn").show();
+						}else if(result=="usernotExist"){
+							alert("You are not Registered with system. Don't violate policy.");
+							$("#buttonsumbit").hide();
+							$(".createnewuserbtn").show();
+						}
+				    },
+				    error:function(e)
+				    {
+				   	 	//alert("Error"+e);
+				   	 	alert("Enter valid e-mail address.");
+						$("#buttonsumbit").hide();
+						$(".createnewuserbtn").show();
+				    } 
+			 });	
+		}	    
+		</script>
+</body>
+</html>
